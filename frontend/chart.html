@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics</title>
+    <link rel="stylesheet" href="/static/style.css">
+<script src="/static/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>💸 Finance</h2>
+        <ul>
+            <li onclick="location.href='dashboard.html'">Dashboard</li>
+            <li onclick="location.href='expenses.html'">Expenses</li>
+            <li class="active">Analytics</li>
+            <li onclick="location.href='ai.html'">AI Insights</li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <h2>📊 Analytics</h2>
+
+        <div class="content">
+
+            <!-- Doughnut Chart -->
+            <div class="chart-box">
+                <h3>Category Spending</h3>
+                <canvas id="pieChart"></canvas>
+            </div>
+
+            <!-- Bar Chart -->
+            <div class="chart-box">
+                <h3>Monthly Expenses</h3>
+                <canvas id="barChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="../static/chart.js"></script>
+
+</body>
+</html>

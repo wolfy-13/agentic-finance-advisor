@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: white;
+}
+
+/* Layout */
+.layout {
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+}
+
+.sidebar li {
+    list-style: none;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar li:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Cards */
+.cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Gradient card */
+.gradient {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+}
+
+/* Chart box */
+.chart-box {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+}
+
+/* Table */
+table {
+    width: 100%;
+}
+
+td, th {
+    padding: 10px;
+}
+
+/* Chat UI */
+.ai-container {
+    padding: 20px;
+}
+
+.chat-box {
+    height: 400px;
+    overflow-y: auto;
+}
+
+.msg {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.user {
+    background: #4f46e5;
+}
+
+.bot {
+    background: #1e293b;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* Mobile */
+@media(max-width:768px){
+    .layout { flex-direction: column; }
+    .cards { flex-direction: column; }
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+<h2>💸 Finance</h2>
+<ul>
+<li>Dashboard</li>
+<li onclick="go('expenses.html')">Expenses</li>
+<li onclick="go('chart.html')">Analytics</li>
+<li onclick="go('ai.html')">AI</li>
+</ul>
+</div>
+
+<div class="main">
+
+<h2>Dashboard</h2>
+
+<div class="cards">
+<div class="card gradient">
+<h4>Total Balance</h4>
+<h1 id="total">₹0</h1>
+</div>
+
+<div class="card">
+<h4>Transactions</h4>
+<h1 id="count">0</h1>
+</div>
+</div>
+
+<div class="chart-box">
+<canvas id="chart"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<script src="../static/app.js"></script>
+</body>
+</html>

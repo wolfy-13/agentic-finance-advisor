@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/app.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+<h2>AI Advice</h2>
+<h3 id="result"></h3>
+
+</div>
+
+<script>
+async function load(){
+    let user = localStorage.getItem("user");
+
+    let res = await fetch("http://127.0.0.1:8000/expenses/" + user);
+    let data = await res.json();
+
+    let total = 0;
+    data.forEach(e=> total += e[1]);
+
+    let ai = await fetch("http://127.0.0.1:8000/ai/" + total);
+    let result = await ai.json();
+
+    document.getElementById("result").innerText = result.advice;
+}
+
+load();
+</script>
+
+</body>
+</html>
+<div class="ai-box">
+    <h3>🤖 AI Financial Advisor</h3>
+    <button onclick="getAI()">Generate Advice</button>
+    <p id="aiResult">Click to analyze your spending...</p>
+</div>

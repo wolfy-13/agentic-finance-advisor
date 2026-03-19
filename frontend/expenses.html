@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenses</title>
+    <link rel="stylesheet" href="/static/style.css">
+<script src="/static/app.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- LEFT: Add Expense -->
+    <div class="left">
+        <h2>Add Expense</h2>
+
+        <input type="date" id="date">
+
+        <select id="category">
+            <option>Food</option>
+            <option>Transport</option>
+            <option>Utilities</option>
+        </select>
+
+        <input type="number" id="amount" placeholder="Amount">
+
+        <textarea id="desc" placeholder="Description"></textarea>
+
+        <button onclick="addExpense()">Add Expense</button>
+    </div>
+
+    <!-- RIGHT: Summary + List -->
+    <div class="right">
+
+        <div class="summary">
+            <h3>Expenses Summary</h3>
+            <h1 id="total">0</h1>
+
+            <input type="text" id="search" placeholder="Search..." onkeyup="filterExpenses()">
+        </div>
+
+        <div class="table-box">
+            <h3>Recent Expenses</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody id="list"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script src="../static/app.js"></script>
+</body>
+</html>
