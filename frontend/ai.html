@@ -3,7 +3,6 @@
 <head>
     <title>AI Finance Assistant</title>
     <link rel="stylesheet" href="/static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="/static/app.js"></script>
 </head>
 <body onload="checkAuth()">
@@ -12,13 +11,13 @@
 
 <div class="layout">
     <div class="sidebar">
-        <h2>💸 Finance</h2>
+        <h2>💸 FinanceAI</h2>
         <ul>
-            <li onclick="go('dashboard.html')">Dashboard</li>
-            <li onclick="go('expenses.html')">Expenses</li>
-            <li onclick="go('chart.html')">Analytics</li>
-            <li class="active">AI Insights</li>
-            <li onclick="logout()">Logout</li>
+            <li onclick="window.location.href='/dashboard'">🏠 Dashboard</li>
+            <li onclick="window.location.href='/expenses.html'">💸 Expenses</li>
+            <li onclick="window.location.href='/chart.html'">📊 Analytics</li>
+            <li class="active">🤖 AI Copilot</li>
+            <li onclick="logout()">🚪 Logout</li>
         </ul>
     </div>
 
@@ -29,8 +28,7 @@
                 <p class="page-tag">AI financial assistant</p>
                 <h1>Ask your finances anything</h1>
                 <p class="page-sub">
-                    Get smart spending insights, budgeting suggestions, category analysis,
-                    and future-focused recommendations from your AI finance copilot.
+                    Get insights based on your actual saved expenses, spending habits, and trends.
                 </p>
             </div>
 
@@ -46,17 +44,18 @@
                 <div class="ai-chat-header">
                     <div>
                         <h3>Finance Copilot</h3>
-                        <p class="chart-subtext">ChatGPT-style financial help, redesigned for fintech UX</p>
+                        <p class="chart-subtext">Personal finance help powered by your expense history</p>
                     </div>
                 </div>
 
                 <div id="chatBox" class="fintech-chat-box">
                     <div class="chat-bubble bot">
-                        Hi — I’m your finance assistant. Ask me things like:
+Hi — I’m your finance assistant.
 
-                        • Where am I overspending?
-                        • How can I save more this month?
-                        • Summarize my spending habits
+Try asking:
+• Where am I overspending?
+• How can I save more this month?
+• Summarize my spending habits
                     </div>
                 </div>
 
@@ -68,7 +67,7 @@
 
                 <div class="fintech-input-wrap">
                     <div class="fintech-input-box">
-                        <input id="userInput" type="text" placeholder="Ask about your expenses, savings, or financial habits...">
+                        <input id="userInput" type="text" placeholder="Ask about your expenses, savings, or habits...">
                         <button id="sendBtn" class="fintech-send-btn" onclick="sendMessage()">Search</button>
                     </div>
                 </div>
@@ -78,24 +77,21 @@
                 <div class="ai-side-card gradient-soft">
                     <h3>What AI does here</h3>
                     <p>
-                        It reads your expense history, identifies patterns, and explains your
-                        financial behavior in plain language.
+                        It reads your saved expense history and gives simple insights you can act on.
                     </p>
                 </div>
 
                 <div class="ai-side-card">
-                    <h3>Benefits of AI in finance</h3>
+                    <h3>Best prompts</h3>
                     <p>
-                        Faster analysis, personalized suggestions, smarter budgeting, and more
-                        confidence in day-to-day money decisions.
+                        Ask about overspending, saving ideas, summaries, or which category is costing you the most.
                     </p>
                 </div>
 
                 <div class="ai-side-card">
-                    <h3>Future of AI in finance</h3>
+                    <h3>Tip</h3>
                     <p>
-                        Finance tools are moving toward predictive, proactive guidance instead
-                        of passive tracking alone.
+                        Add a few expenses first, then ask the AI for better advice based on real data.
                     </p>
                 </div>
             </div>

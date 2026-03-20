@@ -123,3 +123,32 @@ def add_expense(user: str, expense: Expense):
 
     expenses_db[user].append(expense.dict())
     return {"status": "added"}
+    class ChatRequest(BaseModel):
+    message: str
+    expenses: list
+
+@app.post("/ai_chat/")
+def ai_chat(data: ChatRequest):
+    message = data.message.lower()
+    expenses = data.expenses or []
+
+    total = sum(float(e.get("amount", 0)) for e in expenses)
+
+    category_map = {}
+    for e in expenses:
+        category = e.get("category", "Other")
+        amount = float(e.get("amount", 0))
+        category_map[category] = category_map.get(category, 0) + amount
+
+    top_category = max(category_map, key=category_map.get) if category_map else "None"
+
+    if "save" in message:
+        reply = f"Your total spending is ₹{total:.0f}. Try reducing your top category, {top_category}, by 10% to improve savings."
+    elif "overspending" in message:
+        reply = f"Your highest spending category is {top_category}. That is the first place to review for overspending."
+    elif "summary" in message:
+        reply = f"You have {len(expenses)} recorded expenses with total spending of ₹{total:.0f}. Your top category is {top_category}."
+    else:
+        reply = f"I reviewed your expenses. Total spending is ₹{total:.0f}, and your top category is {top_category}."
+
+    return {"reply": reply}
