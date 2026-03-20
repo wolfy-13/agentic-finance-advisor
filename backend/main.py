@@ -104,3 +104,22 @@ def ai_chat(data: ChatRequest):
         reply = f"I analysed your finances. Total spending so far is ₹{total:.0f}."
 
     return {"reply": reply}
+    expenses_db = {}
+
+class Expense(BaseModel):
+    date: str
+    category: str
+    amount: float
+    description: str
+
+@app.get("/expenses/{user}")
+def get_expenses(user: str):
+    return expenses_db.get(user, [])
+
+@app.post("/add_expense/{user}")
+def add_expense(user: str, expense: Expense):
+    if user not in expenses_db:
+        expenses_db[user] = []
+
+    expenses_db[user].append(expense.dict())
+    return {"status": "added"}
