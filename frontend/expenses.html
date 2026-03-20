@@ -2,56 +2,150 @@
 <html>
 <head>
     <title>Expenses</title>
-    <link rel="stylesheet" href="/static/style.css">
-<script src="/static/app.js"></script>
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
-<div class="container">
+    <script src="../static/app.js"></script>
+<script>
+    checkAuth();
+</script>
 
-    <!-- LEFT: Add Expense -->
-    <div class="left">
-        <h2>Add Expense</h2>
+<div class="mesh-bg"></div>
 
-        <input type="date" id="date">
+<div class="layout">
 
-        <select id="category">
-            <option>Food</option>
-            <option>Transport</option>
-            <option>Utilities</option>
-        </select>
-
-        <input type="number" id="amount" placeholder="Amount">
-
-        <textarea id="desc" placeholder="Description"></textarea>
-
-        <button onclick="addExpense()">Add Expense</button>
+    <div class="sidebar">
+        <h2>💸 Finance</h2>
+        <ul>
+            <li onclick="go('dashboard.html')">Dashboard</li>
+            <li class="active">Expenses</li>
+            <li onclick="go('chart.html')">Analytics</li>
+            <li onclick="go('ai.html')">AI Insights</li>
+            <li onclick="go('login.html')">Logout</li>
+        </ul>
     </div>
 
-    <!-- RIGHT: Summary + List -->
-    <div class="right">
+    <div class="main expenses-main">
 
-        <div class="summary">
-            <h3>Expenses Summary</h3>
-            <h1 id="total">0</h1>
+        <div class="expenses-hero">
+            <div>
+                <p class="page-tag">Expense management</p>
+                <h1>Track every rupee with clarity</h1>
+                <p class="page-sub">
+                    Add expenses, review patterns, and let AI help you build stronger money habits.
+                </p>
+            </div>
 
-            <input type="text" id="search" placeholder="Search..." onkeyup="filterExpenses()">
+            <div class="expenses-top-actions">
+                <input type="text" id="expenseSearch" placeholder="Search expenses..." onkeyup="filterExpenses()">
+            </div>
         </div>
 
-        <div class="table-box">
-            <h3>Recent Expenses</h3>
+        <div class="expense-summary-grid">
+            <div class="expense-summary-card gradient">
+                <p>Total Expenses</p>
+                <h2 id="totalExpenseValue">₹0</h2>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody id="list"></tbody>
-            </table>
+            <div class="expense-summary-card">
+                <p>Top Category</p>
+                <h2 id="topCategoryValue">-</h2>
+            </div>
+
+            <div class="expense-summary-card">
+                <p>Transactions</p>
+                <h2 id="expenseCountValue">0</h2>
+            </div>
+        </div>
+
+        <div class="expenses-grid">
+
+            <div class="expense-form-card">
+                <div class="card-head">
+                    <div>
+                        <p class="mini-label">Add record</p>
+                        <h3>Add New Expense</h3>
+                    </div>
+                </div>
+
+                <label>Date</label>
+                <input type="date" id="date">
+
+                <label>Category</label>
+                <select id="category">
+                    <option>Food</option>
+                    <option>Transport</option>
+                    <option>Utilities</option>
+                    <option>Shopping</option>
+                    <option>Health</option>
+                    <option>Entertainment</option>
+                </select>
+
+                <label>Amount</label>
+                <input type="number" id="amount" placeholder="Enter amount">
+
+                <label>Description</label>
+                <textarea id="desc" placeholder="What was this expense for?"></textarea>
+
+                <button class="expense-submit-btn" onclick="addExpense()">Add Expense</button>
+
+                <div class="expense-thought-box">
+                    <h4>Finance Thought</h4>
+                    <p>
+                        Small daily spending patterns often shape your monthly financial future more than big one-time purchases.
+                    </p>
+                </div>
+            </div>
+
+            <div class="expenses-side-content">
+
+                <div class="expense-content-card">
+                    <h3>Why track expenses?</h3>
+                    <p>
+                        Expense tracking gives you visibility into where your money goes, helps avoid overspending,
+                        and improves budgeting with real data.
+                    </p>
+                </div>
+
+                <div class="expense-content-card">
+                    <h3>AI benefit</h3>
+                    <p>
+                        AI can identify hidden patterns, detect expensive habits, and suggest better ways to allocate your income.
+                    </p>
+                </div>
+
+                <div class="expense-content-card">
+                    <h3>Smart habit</h3>
+                    <p>
+                        Review your top category each week. Cutting even 10% from repeat spending can noticeably improve savings.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="expenses-table-card">
+            <div class="card-head">
+                <div>
+                    <p class="mini-label">History</p>
+                    <h3>Recent Expenses</h3>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list"></tbody>
+                </table>
+            </div>
         </div>
 
     </div>

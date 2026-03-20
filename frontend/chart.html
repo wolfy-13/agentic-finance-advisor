@@ -2,51 +2,135 @@
 <html>
 <head>
     <title>Analytics</title>
-    <link rel="stylesheet" href="/static/style.css">
-<script src="/static/app.js"></script>
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
+    <script src="../static/app.js"></script>
+<script>
+    checkAuth();
+</script>
+
+<div class="mesh-bg"></div>
 
 <div class="layout">
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>💸 Finance</h2>
         <ul>
-            <li onclick="location.href='dashboard.html'">Dashboard</li>
-            <li onclick="location.href='expenses.html'">Expenses</li>
+            <li onclick="go('dashboard.html')">Dashboard</li>
+            <li onclick="go('expenses.html')">Expenses</li>
             <li class="active">Analytics</li>
-            <li onclick="location.href='ai.html'">AI Insights</li>
+            <li onclick="go('ai.html')">AI Insights</li>
+            <li onclick="go('login.html')">Logout</li>
         </ul>
     </div>
 
-    <!-- Main -->
-    <div class="main">
+    <div class="main analytics-main">
 
-        <h2>📊 Analytics</h2>
-
-        <div class="content">
-
-            <!-- Doughnut Chart -->
-            <div class="chart-box">
-                <h3>Category Spending</h3>
-                <canvas id="pieChart"></canvas>
+        <div class="analytics-hero">
+            <div>
+                <p class="page-tag">Financial analytics</p>
+                <h1>Understand where your money really goes</h1>
+                <p class="page-sub">
+                    Visualize spending patterns, compare time periods, and use AI to interpret your financial behavior.
+                </p>
             </div>
 
-            <!-- Bar Chart -->
-            <div class="chart-box">
-                <h3>Monthly Expenses</h3>
-                <canvas id="barChart"></canvas>
+            <div class="analytics-toggle-wrap">
+                <button id="weeklyBtn" class="toggle-btn active" onclick="loadChartsPage('weekly')">Weekly</button>
+                <button id="monthlyBtn" class="toggle-btn" onclick="loadChartsPage('monthly')">Monthly</button>
+            </div>
+        </div>
+
+        <div class="analytics-summary-grid">
+            <div class="analytics-summary-card gradient">
+                <p>Total Spending</p>
+                <h2 id="analyticsTotalValue">₹0</h2>
             </div>
 
+            <div class="analytics-summary-card">
+                <p>Average Spend</p>
+                <h2 id="analyticsAverageValue">₹0</h2>
+            </div>
+
+            <div class="analytics-summary-card">
+                <p>Highest Category</p>
+                <h2 id="analyticsTopCategory">-</h2>
+            </div>
+        </div>
+
+        <div class="analytics-grid">
+
+            <div class="analytics-big-card">
+                <div class="chart-topbar">
+                    <div>
+                        <h3>Spending Trend</h3>
+                        <p class="chart-subtext">Track your spending flow over time</p>
+                    </div>
+                </div>
+
+                <div class="legend-row">
+                    <div class="legend-item">
+                        <span class="legend-dot income-dot"></span>
+                        Spending
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot trend-dot"></span>
+                        Trend
+                    </div>
+                </div>
+
+                <canvas id="mainTrendChart"></canvas>
+            </div>
+
+            <div class="analytics-side-stack">
+
+                <div class="analytics-small-card">
+                    <h3>Category Breakdown</h3>
+                    <p class="chart-subtext">See which categories dominate your expenses</p>
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+
+                <div class="analytics-small-card ai-analytics-card">
+                    <h3>🤖 AI Analytics Insight</h3>
+                    <p id="analyticsAiText">
+                        Your analytics insights will appear here based on your expense patterns.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="analytics-bottom-grid">
+            <div class="analytics-note-card">
+                <h3>Why analytics matter</h3>
+                <p>
+                    Financial analytics reveal hidden habits. With the right view, you can spot overspending,
+                    compare categories, and improve your savings with confidence.
+                </p>
+            </div>
+
+            <div class="analytics-note-card">
+                <h3>What AI adds</h3>
+                <p>
+                    AI transforms raw expense data into useful decisions by finding trends faster than manual tracking.
+                </p>
+            </div>
+
+            <div class="analytics-note-card">
+                <h3>Future-ready planning</h3>
+                <p>
+                    The future of finance is predictive. Better analytics today means stronger money decisions tomorrow.
+                </p>
+            </div>
         </div>
 
     </div>
 </div>
 
+<script src="../static/app.js"></script>
 <script src="../static/chart.js"></script>
-
 </body>
 </html>

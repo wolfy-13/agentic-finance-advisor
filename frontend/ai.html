@@ -1,41 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/static/style.css">
-<script src="/static/app.js"></script>
+    <title>AI Finance Assistant</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
-<div class="container">
-
-<h2>AI Advice</h2>
-<h3 id="result"></h3>
-
-</div>
-
+    <script src="../static/app.js"></script>
 <script>
-async function load(){
-    let user = localStorage.getItem("user");
-
-    let res = await fetch("http://127.0.0.1:8000/expenses/" + user);
-    let data = await res.json();
-
-    let total = 0;
-    data.forEach(e=> total += e[1]);
-
-    let ai = await fetch("http://127.0.0.1:8000/ai/" + total);
-    let result = await ai.json();
-
-    document.getElementById("result").innerText = result.advice;
-}
-
-load();
+    checkAuth();
 </script>
 
+<div class="mesh-bg"></div>
+
+<div class="layout">
+    <div class="sidebar">
+        <h2>💸 Finance</h2>
+        <ul>
+            <li onclick="go('dashboard.html')">Dashboard</li>
+            <li onclick="go('expenses.html')">Expenses</li>
+            <li onclick="go('chart.html')">Analytics</li>
+            <li class="active">AI Insights</li>
+            <li onclick="go('login.html')">Logout</li>
+        </ul>
+    </div>
+
+    <div class="main ai-page-main">
+
+        <div class="ai-hero">
+            <div>
+                <p class="page-tag">AI financial assistant</p>
+                <h1>Ask your finances anything</h1>
+                <p class="page-sub">
+                    Get smart spending insights, budgeting suggestions, category analysis,
+                    and future-focused recommendations from your AI finance copilot.
+                </p>
+            </div>
+
+            <div class="ai-hero-badge">
+                <span class="pulse-dot"></span>
+                AI online
+            </div>
+        </div>
+
+        <div class="ai-layout-grid">
+
+            <div class="ai-chat-panel">
+                <div class="ai-chat-header">
+                    <div>
+                        <h3>Finance Copilot</h3>
+                        <p class="chart-subtext">ChatGPT-style financial help, redesigned for fintech UX</p>
+                    </div>
+                </div>
+
+                <div id="chatBox" class="fintech-chat-box">
+                    <div class="chat-bubble bot">
+                        Hi — I’m your finance assistant. Ask me things like:
+
+                        • Where am I overspending?
+                        • How can I save more this month?
+                        • Summarize my spending habits
+                    </div>
+                </div>
+
+                <div class="quick-prompt-row">
+                    <button class="quick-chip" onclick="quickAsk('Where am I overspending?')">Overspending</button>
+                    <button class="quick-chip" onclick="quickAsk('How can I save more this month?')">Save More</button>
+                    <button class="quick-chip" onclick="quickAsk('Summarize my spending habits')">Summary</button>
+                </div>
+
+                <div class="fintech-input-wrap">
+                    <div class="fintech-input-box">
+                        <input id="userInput" type="text" placeholder="Ask about your expenses, savings, or financial habits...">
+                        <button id="sendBtn" class="fintech-send-btn" onclick="sendMessage()">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-side-panel">
+                <div class="ai-side-card gradient-soft">
+                    <h3>What AI does here</h3>
+                    <p>
+                        It reads your expense history, identifies patterns, and explains your
+                        financial behavior in plain language.
+                    </p>
+                </div>
+
+                <div class="ai-side-card">
+                    <h3>Benefits of AI in finance</h3>
+                    <p>
+                        Faster analysis, personalized suggestions, smarter budgeting, and more
+                        confidence in day-to-day money decisions.
+                    </p>
+                </div>
+
+                <div class="ai-side-card">
+                    <h3>Future of AI in finance</h3>
+                    <p>
+                        Finance tools are moving toward predictive, proactive guidance instead
+                        of passive tracking alone.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../static/app.js"></script>
 </body>
 </html>
-<div class="ai-box">
-    <h3>🤖 AI Financial Advisor</h3>
-    <button onclick="getAI()">Generate Advice</button>
-    <p id="aiResult">Click to analyze your spending...</p>
-</div>
