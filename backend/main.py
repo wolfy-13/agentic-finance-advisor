@@ -17,55 +17,90 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# ---------------- PAGE ROUTES ----------------
 
-# -------------------------
-# PAGE ROUTES
-# -------------------------
 @app.get("/")
 def home():
     return FileResponse("frontend/login.html")
-
-
-@app.get("/login.html")
-def login_html():
-    return FileResponse("frontend/login.html")
-
 
 @app.get("/signup")
 def signup_page():
     return FileResponse("frontend/signup.html")
 
-
-@app.get("/signup.html")
-def signup_html():
-    return FileResponse("frontend/signup.html")
-
-
 @app.get("/dashboard")
 def dashboard():
     return FileResponse("frontend/dashboard.html")
 
+@app.get("/expenses.html")
+def expenses_page():
+    return FileResponse("frontend/expenses.html")
 
-@app.get("/dashboard.html")
-def dashboard_html():
-    return FileResponse("frontend/dashboard.html")
+@app.get("/chart.html")
+def chart_page():
+    return FileResponse("frontend/chart.html")
 
+@app.get("/ai.html")
+def ai_page():
+    return FileResponse("frontend/ai.html")
 
-# -------------------------
-# AUTH
-# -------------------------
+# ---------------- AUTH ----------------
+
 class Auth(BaseModel):
     username: str
     password: str
-
 
 @app.post("/register/")
 def register(user: Auth):
     success = register_user(user.username, user.password)
     return {"success": success}
 
-
 @app.post("/login/")
 def login(user: Auth):
     success = login_user(user.username, user.password)
     return {"success": success}
+
+# ---------------- EXPENSE BACKEND ----------------
+
+expenses_db = {}
+
+class Expense(BaseModel):
+    date: str
+    category: str
+    amount: float
+    description: str
+
+@app.get("/expenses/{user}")
+def get_expenses(user: str):
+    return expenses_db.get(user, [])
+
+@app.post("/add_expense/{user}")
+def add_expense(user: str, expense: Expense):
+    if user not in expenses_db:
+        expenses_db[user] = []
+
+    expenses_db[user].append(expense.dict())
+    return {"status": "added"}
+
+# ---------------- AI CHAT ----------------
+
+class ChatRequest(BaseModel):
+    message: str
+    expenses: list
+
+@app.post("/ai_chat/")
+def ai_chat(data: ChatRequest):
+    message = data.message.lower()
+    expenses = data.expenses or []
+
+    total = sum(float(e.get("amount", 0)) for e in expenses)
+
+    if "save" in message:
+        reply = f"Your total tracked spending is ₹{total:.0f}. Try reducing your highest category by 10%."
+    elif "overspending" in message:
+        reply = f"You may be overspending. Your current total is ₹{total:.0f}. Review repeated categories."
+    elif "summary" in message:
+        reply = f"You have {len(expenses)} expenses with total ₹{total:.0f}."
+    else:
+        reply = f"I analysed your finances. Total spending so far is ₹{total:.0f}."
+
+    return {"reply": reply}
