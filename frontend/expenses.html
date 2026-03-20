@@ -2,14 +2,11 @@
 <html>
 <head>
     <title>Expenses</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="/static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="/static/app.js"></script>
 </head>
-<body>
-    <script src="../static/app.js"></script>
-<script>
-    checkAuth();
-</script>
+<body onload="checkAuth(); load();">
 
 <div class="mesh-bg"></div>
 
@@ -22,7 +19,7 @@
             <li class="active">Expenses</li>
             <li onclick="go('chart.html')">Analytics</li>
             <li onclick="go('ai.html')">AI Insights</li>
-            <li onclick="go('login.html')">Logout</li>
+            <li onclick="logout()">Logout</li>
         </ul>
     </div>
 
@@ -151,6 +148,5 @@
     </div>
 </div>
 
-<script src="../static/app.js"></script>
 </body>
 </html>

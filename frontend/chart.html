@@ -2,15 +2,12 @@
 <html>
 <head>
     <title>Analytics</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="/static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/app.js"></script>
 </head>
-<body>
-    <script src="../static/app.js"></script>
-<script>
-    checkAuth();
-</script>
+<body onload="checkAuth()">
 
 <div class="mesh-bg"></div>
 
@@ -23,7 +20,7 @@
             <li onclick="go('expenses.html')">Expenses</li>
             <li class="active">Analytics</li>
             <li onclick="go('ai.html')">AI Insights</li>
-            <li onclick="go('login.html')">Logout</li>
+            <li onclick="logout()">Logout</li>
         </ul>
     </div>
 
@@ -39,8 +36,8 @@
             </div>
 
             <div class="analytics-toggle-wrap">
-                <button id="weeklyBtn" class="toggle-btn active" onclick="loadChartsPage('weekly')">Weekly</button>
-                <button id="monthlyBtn" class="toggle-btn" onclick="loadChartsPage('monthly')">Monthly</button>
+                <button id="weeklyBtn" class="toggle-btn active" onclick="renderCharts('weekly')">Weekly</button>
+                <button id="monthlyBtn" class="toggle-btn" onclick="renderCharts('monthly')">Monthly</button>
             </div>
         </div>
 
@@ -130,7 +127,104 @@
     </div>
 </div>
 
-<script src="../static/app.js"></script>
-<script src="../static/chart.js"></script>
+<script>
+let trendChart;
+let pieChart;
+
+function setActive(mode) {
+    document.getElementById("weeklyBtn").classList.toggle("active", mode === "weekly");
+    document.getElementById("monthlyBtn").classList.toggle("active", mode === "monthly");
+}
+
+function updateSummary(values, categories) {
+    const total = values.reduce((a, b) => a + b, 0);
+    const avg = values.length ? Math.round(total / values.length) : 0;
+
+    let topCategory = "-";
+    let topValue = 0;
+
+    for (const key in categories) {
+        if (categories[key] > topValue) {
+            topValue = categories[key];
+            topCategory = key;
+        }
+    }
+
+    document.getElementById("analyticsTotalValue").innerText = `₹${total}`;
+    document.getElementById("analyticsAverageValue").innerText = `₹${avg}`;
+    document.getElementById("analyticsTopCategory").innerText = topCategory;
+
+    document.getElementById("analyticsAiText").innerText =
+        `Your highest spending category is ${topCategory}. Your average spend in this view is ₹${avg}.`;
+}
+
+function renderCharts(mode) {
+    setActive(mode);
+
+    const weeklyLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const weeklyData = [500, 850, 400, 950, 620, 1200, 780];
+
+    const monthlyLabels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+    const monthlyData = [4200, 5100, 3900, 6100];
+
+    const categoryData = {
+        Food: 3200,
+        Transport: 1400,
+        Shopping: 2200,
+        Utilities: 1800,
+        Health: 900,
+        Entertainment: 1300
+    };
+
+    const labels = mode === "weekly" ? weeklyLabels : monthlyLabels;
+    const values = mode === "weekly" ? weeklyData : monthlyData;
+
+    updateSummary(values, categoryData);
+
+    if (trendChart) trendChart.destroy();
+    if (pieChart) pieChart.destroy();
+
+    const trendCtx = document.getElementById("mainTrendChart");
+    const pieCtx = document.getElementById("categoryPieChart");
+
+    trendChart = new Chart(trendCtx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Spending",
+                data: values,
+                borderWidth: 2,
+                tension: 0.4,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    pieChart = new Chart(pieCtx, {
+        type: "doughnut",
+        data: {
+            labels: Object.keys(categoryData),
+            datasets: [{
+                data: Object.values(categoryData),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    renderCharts("weekly");
+});
+</script>
+
 </body>
 </html>
