@@ -1,57 +1,201 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Expenses</title>
+    <title>Analytics</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/static/app.js"></script>
 </head>
-
-<body onload="checkAuth(); load();">
+<body onload="checkAuth(); loadChartsPage();">
 
 <div class="mesh-bg"></div>
 
 <div class="layout">
 
-<div class="sidebar">
-<h2>💸 FinanceAI</h2>
-<ul>
-<li onclick="window.location.href='/dashboard'">🏠 Dashboard</li>
-<li class="active">💸 Expenses</li>
-<li onclick="window.location.href='/chart.html'">📊 Analytics</li>
-<li onclick="window.location.href='/ai.html'">🤖 AI</li>
-<li onclick="logout()">🚪 Logout</li>
-</ul>
+    <div class="sidebar">
+        <h2>💸 FinanceAI</h2>
+        <ul>
+            <li onclick="window.location.href='/dashboard'">🏠 Dashboard</li>
+            <li onclick="window.location.href='/expenses.html'">💸 Expenses</li>
+            <li class="active">📊 Analytics</li>
+            <li onclick="window.location.href='/ai.html'">🤖 AI</li>
+            <li onclick="logout()">🚪 Logout</li>
+        </ul>
+    </div>
+
+    <div class="main analytics-main">
+
+        <div class="analytics-hero">
+            <div>
+                <p class="page-tag">Financial analytics</p>
+                <h1>Understand where your money goes</h1>
+                <p class="page-sub">
+                    View your real spending trend and category breakdown based on your saved expenses.
+                </p>
+            </div>
+        </div>
+
+        <div class="analytics-summary-grid">
+            <div class="analytics-summary-card gradient">
+                <p>Total Spending</p>
+                <h2 id="analyticsTotalValue">₹0</h2>
+            </div>
+
+            <div class="analytics-summary-card">
+                <p>Average Spend</p>
+                <h2 id="analyticsAverageValue">₹0</h2>
+            </div>
+
+            <div class="analytics-summary-card">
+                <p>Highest Category</p>
+                <h2 id="analyticsTopCategory">-</h2>
+            </div>
+        </div>
+
+        <div class="analytics-grid">
+
+            <div class="analytics-big-card">
+                <div class="chart-topbar">
+                    <div>
+                        <h3>Expense Trend</h3>
+                        <p class="chart-subtext">Amount spent by date</p>
+                    </div>
+                </div>
+
+                <canvas id="mainTrendChart"></canvas>
+            </div>
+
+            <div class="analytics-side-stack">
+
+                <div class="analytics-small-card">
+                    <h3>Category Breakdown</h3>
+                    <p class="chart-subtext">See which categories take most of your money</p>
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+
+                <div class="analytics-small-card ai-analytics-card">
+                    <h3>Insight</h3>
+                    <p id="analyticsAiText">Your analytics insight will appear here.</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<div class="main">
+<script>
+let trendChart;
+let pieChart;
 
-<h1>Add Expense</h1>
+async function loadChartsPage() {
+    const user = localStorage.getItem("user") || "demo";
 
-<input type="date" id="date">
-<input type="text" id="category" placeholder="Category">
-<input type="number" id="amount" placeholder="Amount">
-<input type="text" id="desc" placeholder="Description">
+    try {
+        const res = await fetch(`/expenses/${user}`);
+        const expenses = await res.json();
 
-<button onclick="addExpense()">Add</button>
+        const safeExpenses = Array.isArray(expenses) ? expenses : [];
 
-<h2>Expenses</h2>
+        const total = safeExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+        const avg = safeExpenses.length ? Math.round(total / safeExpenses.length) : 0;
 
-<table>
-<thead>
-<tr>
-<th>Date</th>
-<th>Category</th>
-<th>Amount</th>
-<th>Description</th>
-</tr>
-</thead>
+        const categoryMap = {};
+        const dateMap = {};
 
-<tbody id="list"></tbody>
+        safeExpenses.forEach(e => {
+            const category = e.category || "Other";
+            const date = e.date || "No Date";
+            const amount = Number(e.amount || 0);
 
-</table>
+            categoryMap[category] = (categoryMap[category] || 0) + amount;
+            dateMap[date] = (dateMap[date] || 0) + amount;
+        });
 
-</div>
-</div>
+        let topCategory = "-";
+        let topValue = 0;
+
+        for (const key in categoryMap) {
+            if (categoryMap[key] > topValue) {
+                topValue = categoryMap[key];
+                topCategory = key;
+            }
+        }
+
+        document.getElementById("analyticsTotalValue").innerText = `₹${total}`;
+        document.getElementById("analyticsAverageValue").innerText = `₹${avg}`;
+        document.getElementById("analyticsTopCategory").innerText = topCategory;
+
+        const insight = document.getElementById("analyticsAiText");
+        if (safeExpenses.length === 0) {
+            insight.innerText = "No expense data yet. Add expenses to see analytics.";
+        } else {
+            insight.innerText = `You have ${safeExpenses.length} transactions. Your top spending category is ${topCategory} with total spending of ₹${topValue}.`;
+        }
+
+        const trendLabels = Object.keys(dateMap);
+        const trendValues = Object.values(dateMap);
+
+        const pieLabels = Object.keys(categoryMap);
+        const pieValues = Object.values(categoryMap);
+
+        if (trendChart) trendChart.destroy();
+        if (pieChart) pieChart.destroy();
+
+        const trendCtx = document.getElementById("mainTrendChart");
+        trendChart = new Chart(trendCtx, {
+            type: "line",
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: "Spending",
+                    data: trendValues,
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: "#cbd5e1" },
+                        grid: { color: "rgba(255,255,255,0.06)" }
+                    },
+                    y: {
+                        ticks: { color: "#cbd5e1" },
+                        grid: { color: "rgba(255,255,255,0.06)" }
+                    }
+                }
+            }
+        });
+
+        const pieCtx = document.getElementById("categoryPieChart");
+        pieChart = new Chart(pieCtx, {
+            type: "doughnut",
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieValues,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+    } catch (err) {
+        console.error("Chart load error:", err);
+        document.getElementById("analyticsAiText").innerText = "Failed to load analytics data.";
+    }
+}
+</script>
 
 </body>
 </html>
