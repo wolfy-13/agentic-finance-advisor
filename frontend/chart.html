@@ -228,3 +228,24 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+<script>
+async function loadDashboardStats() {
+    const user = localStorage.getItem("user") || "demo";
+
+    try {
+        const res = await fetch(`/expenses/${user}`);
+        const expenses = await res.json();
+        const safeExpenses = Array.isArray(expenses) ? expenses : [];
+
+        const total = safeExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+        const savings = Math.max(0, 50000 - total);
+
+        document.getElementById("kpiSpend").innerText = `₹${total}`;
+        document.getElementById("kpiSave").innerText = `₹${savings}`;
+    } catch (err) {
+        console.error("Dashboard stats error:", err);
+    }
+}
+
+loadDashboardStats();
+</script>

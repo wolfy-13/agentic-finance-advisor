@@ -6,7 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body onload="checkAuth()">
+<body onload="checkAuth(); loadDashboardData();">
     <div class="mesh-bg"></div>
 
     <div class="layout">
@@ -52,17 +52,17 @@
                 <div class="ultra-kpis">
                     <div class="ultra-card">
                         <p>Total Spending</p>
-                        <h2 id="kpiSpend">₹24,500</h2>
+                        <h2 id="kpiSpend">₹0</h2>
                     </div>
 
                     <div class="ultra-card">
                         <p>Savings This Month</p>
-                        <h2 id="kpiSave">₹8,200</h2>
+                        <h2 id="kpiSave">₹0</h2>
                     </div>
 
                     <div class="ultra-card gradient">
                         <p>AI Health Score</p>
-                        <h2>91%</h2>
+                        <h2 id="kpiHealth">91%</h2>
                     </div>
                 </div>
 
@@ -75,8 +75,8 @@
                             </div>
 
                             <div class="chart-toggle">
-                                <button id="weeklyBtn" class="toggle-btn active">Weekly</button>
-                                <button id="monthlyBtn" class="toggle-btn">Monthly</button>
+                                <button id="weeklyBtn" class="toggle-btn active" onclick="setDashboardMode('weekly')">Weekly</button>
+                                <button id="monthlyBtn" class="toggle-btn" onclick="setDashboardMode('monthly')">Monthly</button>
                             </div>
                         </div>
 
@@ -97,29 +97,15 @@
                     <div class="ultra-ai">
                         <h3>🤖 AI Insight</h3>
                         <p id="aiInsight">
-                            Your food expenses increased by 18% this week. Setting a dining budget can
-                            help improve your monthly savings without affecting essentials.
+                            Add expenses to unlock smarter financial insights.
                         </p>
                     </div>
                 </div>
 
                 <div class="ultra-feed">
                     <h3>Recent Activity</h3>
-
-                    <div class="feed-item">
-                        Spent ₹450 on Groceries
-                    </div>
-
-                    <div class="feed-item">
-                        Paid ₹1,200 for Utilities
-                    </div>
-
-                    <div class="feed-item">
-                        Saved ₹2,000 this week
-                    </div>
-
-                    <div class="feed-item">
-                        AI suggested reducing subscription costs
+                    <div id="recentActivity">
+                        <div class="feed-item">No recent activity yet</div>
                     </div>
                 </div>
             </div>
@@ -130,17 +116,146 @@
 
     <script src="/static/app.js"></script>
     <script>
-        const ctx = document.getElementById("expenseChart");
+        let dashboardChart;
+        let dashboardExpenses = [];
+        let dashboardMode = "weekly";
 
-        if (ctx) {
-            new Chart(ctx, {
+        function setDashboardMode(mode) {
+            dashboardMode = mode;
+
+            document.getElementById("weeklyBtn").classList.toggle("active", mode === "weekly");
+            document.getElementById("monthlyBtn").classList.toggle("active", mode === "monthly");
+
+            renderDashboardChart();
+        }
+
+        async function loadDashboardData() {
+            const user = localStorage.getItem("user") || "demo";
+
+            try {
+                const res = await fetch(`/expenses/${user}`);
+                const expenses = await res.json();
+                dashboardExpenses = Array.isArray(expenses) ? expenses : [];
+
+                updateKpis();
+                updateInsight();
+                updateRecentActivity();
+                renderDashboardChart();
+            } catch (err) {
+                console.error("Dashboard load error:", err);
+            }
+        }
+
+        function updateKpis() {
+            const total = dashboardExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+            const savings = Math.max(0, 50000 - total);
+
+            let health = 91;
+            if (total > 30000) health = 74;
+            else if (total > 20000) health = 82;
+            else if (total > 10000) health = 88;
+
+            document.getElementById("kpiSpend").innerText = `₹${total}`;
+            document.getElementById("kpiSave").innerText = `₹${savings}`;
+            document.getElementById("kpiHealth").innerText = `${health}%`;
+        }
+
+        function updateInsight() {
+            const aiInsight = document.getElementById("aiInsight");
+
+            if (!dashboardExpenses.length) {
+                aiInsight.innerText = "Add expenses to unlock smarter financial insights.";
+                return;
+            }
+
+            const categoryMap = {};
+            dashboardExpenses.forEach(e => {
+                const category = e.category || "Other";
+                const amount = Number(e.amount || 0);
+                categoryMap[category] = (categoryMap[category] || 0) + amount;
+            });
+
+            let topCategory = "Other";
+            let topAmount = 0;
+
+            for (const key in categoryMap) {
+                if (categoryMap[key] > topAmount) {
+                    topAmount = categoryMap[key];
+                    topCategory = key;
+                }
+            }
+
+            aiInsight.innerText =
+                `Your highest spending category is ${topCategory} at ₹${topAmount}. Reducing this category slightly can improve your monthly savings.`;
+        }
+
+        function updateRecentActivity() {
+            const box = document.getElementById("recentActivity");
+
+            if (!dashboardExpenses.length) {
+                box.innerHTML = `<div class="feed-item">No recent activity yet</div>`;
+                return;
+            }
+
+            const latest = [...dashboardExpenses].slice(-4).reverse();
+
+            box.innerHTML = latest.map(e => `
+                <div class="feed-item">
+                    Spent ₹${Number(e.amount || 0)} on ${e.category || "Other"}${e.date ? ` · ${e.date}` : ""}
+                </div>
+            `).join("");
+        }
+
+        function buildWeeklyData() {
+            const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+            const values = [0, 0, 0, 0, 0, 0, 0];
+
+            dashboardExpenses.forEach(e => {
+                if (!e.date) return;
+                const d = new Date(e.date);
+                if (isNaN(d)) return;
+                const jsDay = d.getDay(); // Sun=0
+                const index = jsDay === 0 ? 6 : jsDay - 1; // Mon=0
+                values[index] += Number(e.amount || 0);
+            });
+
+            return { labels, values };
+        }
+
+        function buildMonthlyData() {
+            const labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+            const values = [0, 0, 0, 0, 0];
+
+            dashboardExpenses.forEach(e => {
+                if (!e.date) return;
+                const d = new Date(e.date);
+                if (isNaN(d)) return;
+                const day = d.getDate();
+                const weekIndex = Math.min(4, Math.floor((day - 1) / 7));
+                values[weekIndex] += Number(e.amount || 0);
+            });
+
+            return { labels, values };
+        }
+
+        function renderDashboardChart() {
+            const ctx = document.getElementById("expenseChart");
+            if (!ctx) return;
+
+            const dataSet = dashboardMode === "weekly" ? buildWeeklyData() : buildMonthlyData();
+
+            if (dashboardChart) {
+                dashboardChart.destroy();
+            }
+
+            dashboardChart = new Chart(ctx, {
                 type: "line",
                 data: {
-                    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                    labels: dataSet.labels,
                     datasets: [
                         {
                             label: "Spending",
-                            data: [500, 700, 400, 900, 650, 1200, 800],
+                            data: dataSet.values,
                             borderWidth: 3,
                             tension: 0.4,
                             fill: false
