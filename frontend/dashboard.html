@@ -47,6 +47,23 @@
         </div>
     </div>
 </div>
+<div class="profile-hero-card">
+    <div class="profile-hero-left">
+        <div class="profile-avatar" id="profileAvatar">U</div>
+        <div>
+            <p class="page-tag">Welcome back</p>
+            <h3 id="profileName">User</h3>
+            <p class="chart-subtext" id="profileEmail">Your financial command center is ready</p>
+        </div>
+    </div>
+
+    <div class="profile-hero-right">
+        <div class="balance-chip">
+            <span>Available Balance</span>
+            <strong id="availableBalance">₹50000</strong>
+        </div>
+    </div>
+</div>
             <div class="ultra-dashboard">
 
                 <div class="ultra-hero">
@@ -152,7 +169,14 @@
             document.getElementById("weeklyBtn").classList.toggle("active", mode === "weekly");
             document.getElementById("monthlyBtn").classList.toggle("active", mode === "monthly");
 
+            animateValue("kpiSpend", total, "₹");
+animateValue("kpiSave", Math.max(0, 50000 - total), "₹");
+
             renderDashboardChart();
+            const balanceEl = document.getElementById("availableBalance");
+if (balanceEl) {
+    balanceEl.innerText = `₹${Math.max(0, 50000 - total)}`;
+}
         }
 
         async function loadDashboardData() {
@@ -188,6 +212,7 @@
 
         function updateInsight() {
             const aiInsight = document.getElementById("aiInsight");
+            showToast(`AI Insight: Highest spending in ${topCategory}`);
 
             if (!dashboardExpenses.length) {
                 aiInsight.innerText = "Add expenses to unlock smarter financial insights.";
@@ -324,5 +349,7 @@
     <button class="mobile-nav-item" onclick="window.location.href='/chart.html'">📊<span>Charts</span></button>
     <button class="mobile-nav-item" onclick="window.location.href='/ai.html'">🤖<span>AI</span></button>
 </div>
+
+
 </body>
 </html>

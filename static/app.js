@@ -1,5 +1,23 @@
 const API = "";
+function animateValue(elementId, endValue, prefix = "", suffix = "", duration = 800) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
 
+    const startValue = 0;
+    const startTime = performance.now();
+
+    function update(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const current = Math.floor(startValue + (endValue - startValue) * progress);
+        el.innerText = `${prefix}${current}${suffix}`;
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+
+    requestAnimationFrame(update);
+}
 /* =========================
 NAVIGATION
 ========================= */
@@ -248,6 +266,9 @@ function updateExpenseSummary(data) {
     const balanceEl = document.getElementById("availableBalance");
 if(balanceEl){
     balanceEl.innerText = `₹${Math.max(0, 50000 - total)}`;
+    if (totalEl) animateValue("totalExpenseValue", total, "₹");
+if (countEl) animateValue("expenseCountValue", data.length);
+if (topCatEl) topCatEl.innerText = topCategory;
 }
 
     let topCategory = "-";
@@ -271,6 +292,7 @@ if(balanceEl){
 
 async function addExpense() {
     const user = localStorage.getItem("user") || "demo";
+    showToast(`Expense added: ₹${expense.amount} for ${expense.category}`);
 
     const expense = {
         date: document.getElementById("date")?.value || "",
@@ -412,3 +434,31 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+function loadProfileCard() {
+    const user = localStorage.getItem("user") || "User";
+
+    const profileName = document.getElementById("profileName");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileEmail = document.getElementById("profileEmail");
+
+    if (profileName) profileName.innerText = user;
+    if (profileAvatar) profileAvatar.innerText = user.charAt(0).toUpperCase();
+    if (profileEmail) profileEmail.innerText = `${user} • Smart financial overview`;
+}
+function showToast(message) {
+    let toast = document.getElementById("appToast");
+
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "appToast";
+        toast.className = "app-toast";
+        document.body.appendChild(toast);
+    }
+
+    toast.innerText = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2600);
+}
