@@ -1,166 +1,166 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script>
-    checkAuth();
-</script>
-<title>Dashboard</title>
-<link rel="stylesheet" href="/static/style.css">
-<script src="/static/app.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div class="topbar">
-    <h2>Dashboard</h2>
-    <input placeholder="Search..." class="search">
-</div>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<script src="../static/app.js"></script>
-<script>
-    checkAuth();
-</script>
-<body>
+
+<body onload="checkAuth()">
     <div class="mesh-bg"></div>
-    <div class="ultra-chart">
-    <div class="chart-topbar">
-        <div>
-            <h3>Spending Analytics</h3>
-            <p class="chart-subtext">Track your cash flow with AI-powered trends</p>
-        </div>
-        <div class="analytics-center">
 
-    <div class="analytics-glow"></div>
-
-    <div class="mini-stat left">
-        <span>↑ 18%</span>
-        Food increase
+    <div class="topbar">
+        <h2>Dashboard</h2>
+        <input placeholder="Search..." class="search">
     </div>
 
-    <div class="mini-stat right">
-        <span>₹2,450</span>
-        Avg Weekly
-    </div>
+    <div class="layout">
 
-    <div class="ai-pulse">
-        🤖 AI Tracking
-    </div>
+        <div class="sidebar">
+            <h2>💸 Finance</h2>
+            <ul>
+                <li>Dashboard</li>
+                <li onclick="window.location.href='/dashboard'">🏠 Dashboard</li>
+                <li>💸 Expenses</li>
+                <li>📊 Charts</li>
+                <li>🤖 AI</li>
+                <li onclick="logout()">🚪 Logout</li>
+            </ul>
+        </div>
 
-</div>
+        <div class="ultra-dashboard">
 
-        <div class="chart-toggle">
-            <button id="weeklyBtn" class="toggle-btn active" onclick="loadExpenseChart('weekly')">Weekly</button>
-            <button id="monthlyBtn" class="toggle-btn" onclick="loadExpenseChart('monthly')">Monthly</button>
+            <div class="ultra-hero">
+                <div>
+                    <h1 class="ultra-title">
+                        Financial Intelligence <span>Reimagined</span>
+                    </h1>
+
+                    <p class="ultra-sub">
+                        Real-time AI monitors your behaviour, predicts expenses,
+                        and optimises your financial decisions.
+                    </p>
+                </div>
+
+                <button class="ultra-btn">+ Add Expense</button>
+            </div>
+
+            <div class="ultra-kpis">
+                <div class="ultra-card">
+                    <p>Total Spending</p>
+                    <h2 id="kpiSpend">₹0</h2>
+                </div>
+
+                <div class="ultra-card">
+                    <p>Savings</p>
+                    <h2 id="kpiSave">₹0</h2>
+                </div>
+
+                <div class="ultra-card gradient">
+                    <p>AI Health Score</p>
+                    <h2>91%</h2>
+                </div>
+            </div>
+
+            <div class="ultra-chart">
+                <div class="chart-topbar">
+                    <div>
+                        <h3>Spending Analytics</h3>
+                        <p class="chart-subtext">Track your cash flow with AI-powered trends</p>
+                    </div>
+
+                    <div class="analytics-center">
+                        <div class="analytics-glow"></div>
+
+                        <div class="mini-stat left">
+                            <span>↑ 18%</span>
+                            Food increase
+                        </div>
+
+                        <div class="mini-stat right">
+                            <span>₹2,450</span>
+                            Avg Weekly
+                        </div>
+
+                        <div class="ai-pulse">
+                            🤖 AI Tracking
+                        </div>
+                    </div>
+
+                    <div class="chart-toggle">
+                        <button id="weeklyBtn" class="toggle-btn active">Weekly</button>
+                        <button id="monthlyBtn" class="toggle-btn">Monthly</button>
+                    </div>
+                </div>
+
+                <div class="legend-row">
+                    <div class="legend-item">
+                        <span class="legend-dot income-dot"></span>
+                        Spending
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot trend-dot"></span>
+                        Trend
+                    </div>
+                </div>
+
+                <canvas id="expenseChart"></canvas>
+            </div>
+
+            <div class="ultra-grid">
+                <div class="ultra-ai">
+                    <h3>🤖 AI Insight</h3>
+                    <p id="aiInsight">
+                        Your food expenses increased 18% this week.
+                        Consider setting a dining budget.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ultra-feed">
+                <h3>Recent Activity</h3>
+
+                <div class="feed-item">
+                    Spent ₹450 on Groceries
+                </div>
+
+                <div class="feed-item">
+                    Saved ₹2000 this week
+                </div>
+
+                <div class="feed-item">
+                    AI suggested reducing subscriptions
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div class="legend-row">
-        <div class="legend-item">
-            <span class="legend-dot income-dot"></span>
-            Spending
-        </div>
-        <div class="legend-item">
-            <span class="legend-dot trend-dot"></span>
-            Trend
-        </div>
-    </div>
+    <div class="chat-float">🤖</div>
 
-    <canvas id="expenseChart"></canvas>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="../static/app.js"></script>
-<script src="../static/chart.js"></script>
-
-<div class="layout">
-
-<div class="sidebar">
-<h2>💸 Finance</h2>
-<ul>
-<li>Dashboard</li>
-<li onclick="go('dashboard.html')">🏠 Dashboard</li>
-<li onclick="go('expenses.html')">💸 Expenses</li>
-<li onclick="go('chart.html')">📊 Charts</li>
-<li onclick="go('ai.html')">🤖 AI</li>
-<li onclick="logout()">🚪 Logout</li>
-</ul>
-</div>
-
-<div class="ultra-dashboard">
-
-    <!-- HERO -->
-    <div class="ultra-hero">
-
-        <div>
-            <h1 class="ultra-title">
-                Financial Intelligence <span>Reimagined</span>
-            </h1>
-
-            <p class="ultra-sub">
-                Real-time AI monitors your behaviour, predicts expenses,
-                and optimises your financial decisions.
-            </p>
-        </div>
-
-        <button class="ultra-btn">+ Add Expense</button>
-
-    </div>
-
-    <!-- KPI CARDS -->
-    <div class="ultra-kpis">
-
-        <div class="ultra-card">
-            <p>Total Spending</p>
-            <h2 id="kpiSpend">₹0</h2>
-        </div>
-
-        <div class="ultra-card">
-            <p>Savings</p>
-            <h2 id="kpiSave">₹0</h2>
-        </div>
-
-        <div class="ultra-card gradient">
-            <p>AI Health Score</p>
-            <h2>91%</h2>
-        </div>
-
-    </div>
-
-    <!-- CHART + AI -->
-    <div class="ultra-grid">
-
-        <div class="ultra-chart">
-            <canvas id="expenseChart"></canvas>
-        </div>
-
-        <div class="ultra-ai">
-
-            <h3>🤖 AI Insight</h3>
-
-            <p id="aiInsight">
-                Your food expenses increased 18% this week.
-                Consider setting a dining budget.
-            </p>
-
-        </div>
-
-    </div>
-
-    <!-- ACTIVITY FEED -->
-    <div class="ultra-feed">
-
-        <h3>Recent Activity</h3>
-
-        <div class="feed-item">
-            Spent ₹450 on Groceries
-        </div>
-
-        <div class="feed-item">
-            Saved ₹2000 this week
-        </div>
-
-        <div class="feed-item">
-            AI suggested reducing subscriptions
-        </div>
-
-    </div>
-
-</div>
-<!-- FLOATING AI BUTTON -->
-<div class="chat-float" onclick="go('ai.html')">🤖</div>
+    <script src="/static/app.js"></script>
+    <script>
+        const ctx = document.getElementById("expenseChart");
+        if (ctx) {
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                    datasets: [
+                        {
+                            label: "Spending",
+                            data: [500, 700, 400, 900, 650, 1200, 800],
+                            borderWidth: 2,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    </script>
+</body>
+</html>
