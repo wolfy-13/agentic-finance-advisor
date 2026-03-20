@@ -7,11 +7,10 @@ function go(page) {
     if (page === "login.html") {
         window.location.href = "/";
     } else if (page === "signup.html") {
-        window.location.href = "/signup";
+        window.location.href = "/signup";                       
     } else if (page === "dashboard.html") {
         window.location.href = "/dashboard";
-    } else {
-        window.location.href = page;
+    } else {                             
     }
 }
 
@@ -184,6 +183,7 @@ let allExpenses = [];
 
 async function load() {
     const user = localStorage.getItem("user") || "demo";
+    loadProfileCard();
 
     try {
         const res = await fetch(`${API}/expenses/${user}`);
@@ -245,6 +245,10 @@ function updateExpenseSummary(data) {
         total += amt;
         categoryMap[e.category] = (categoryMap[e.category] || 0) + amt;
     });
+    const balanceEl = document.getElementById("availableBalance");
+if(balanceEl){
+    balanceEl.innerText = `₹${Math.max(0, 50000 - total)}`;
+}
 
     let topCategory = "-";
     let max = 0;

@@ -30,7 +30,23 @@
                 </div>
                 <input placeholder="Search transactions, categories..." class="search">
             </div>
+<div class="profile-hero-card">
+    <div class="profile-hero-left">
+        <div class="profile-avatar" id="profileAvatar">S</div>
+        <div>
+            <p class="page-tag">Welcome back</p>
+            <h3 id="profileName">Surya</h3>
+            <p class="chart-subtext" id="profileEmail">Your financial command center is ready</p>
+        </div>
+    </div>
 
+    <div class="profile-hero-right">
+        <div class="balance-chip">
+            <span>Available Balance</span>
+            <strong id="availableBalance">₹50,000</strong>
+        </div>
+    </div>
+</div>
             <div class="ultra-dashboard">
 
                 <div class="ultra-hero">
@@ -116,6 +132,16 @@
 
     <script src="/static/app.js"></script>
     <script>
+        function loadProfileCard() {
+    const user = localStorage.getItem("user") || "User";
+    const profileName = document.getElementById("profileName");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileEmail = document.getElementById("profileEmail");
+
+    if (profileName) profileName.innerText = user;
+    if (profileAvatar) profileAvatar.innerText = user.charAt(0).toUpperCase();
+    if (profileEmail) profileEmail.innerText = `${user} • Smart financial overview`;
+}
         let dashboardChart;
         let dashboardExpenses = [];
         let dashboardMode = "weekly";
