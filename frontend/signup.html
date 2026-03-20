@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>FinanceAI - Sign Up</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="/static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body class="auth-landing-page">
@@ -59,12 +59,12 @@
         </div>
 
         <div class="auth-right">
-    <div class="signup-panel">
+            <div class="signup-panel">
 
-        <div class="panel-topbar">
-            <button class="ghost-btn" onclick="go('login.html')">Login</button>
-            <button class="solid-btn small" onclick="go('signup.html')">Register</button>
-        </div>
+                <div class="panel-topbar">
+                    <button class="ghost-btn" onclick="window.location.href='/'">Login</button>
+                    <button class="solid-btn small" onclick="window.location.href='/signup'">Register</button>
+                </div>
             </div>
 
             <div class="signup-panel">
@@ -85,7 +85,7 @@
                     <input id="fullname" type="text" placeholder="Enter your full name">
 
                     <label>Email</label>
-                    <input id="email" type="email" placeholder="Enter your email">
+                    <input id="username" type="email" placeholder="Enter your email">
 
                     <label>Password</label>
                     <input id="password" type="password" placeholder="Create a password">
@@ -94,9 +94,8 @@
                     <input id="confirm" type="password" placeholder="Confirm password">
 
                     <small id="signupError"></small>
-                    <script src="../static/app.js"></script> 
 
-                    <button id="signupBtn" class="solid-btn big" onclick="signup()">
+                    <button id="signupBtn" class="solid-btn big" onclick="register()">
                         Create account
                     </button>
 
@@ -115,7 +114,7 @@
 
                     <p class="switch-auth">
                         Already have an account?
-                        <span onclick="go('login.html')">Sign in</span>
+                        <span onclick="window.location.href='/'">Sign in</span>
                     </p>
                 </div>
             </div>
@@ -123,7 +122,6 @@
 
     </div>
 
-    <script src="../static/app.js"></script>
+    <script src="/static/app.js"></script>
 </body>
 </html>
-<script src="../static/app.js"></script>
