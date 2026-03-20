@@ -78,9 +78,10 @@ body {
     <input id="username" placeholder="Username">
     <input id="password" type="password" placeholder="Password">
 
-    <button onclick="login()">Login</button>
+    <small id="loginError"></small>
+
+    <button id="loginBtn" onclick="login()">Login</button>
     <p onclick="window.location.href='/signup'">Create account</p>
-    <small id="signupError"></small>
 
     <div class="login-link" onclick="window.location.href='/signup'">
     </div>
