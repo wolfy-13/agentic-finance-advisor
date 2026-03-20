@@ -1,28 +1,36 @@
-const API = "http://127.0.0.1:8000";
+const API = "";
 
 /* =========================
 NAVIGATION
 ========================= */
-function go(page){
-    window.location.href = page;
-}
-
-function logout(){
-    localStorage.removeItem("user");
-    window.location.href = "login.html";
-}
-
-function checkAuth(){
-    const user = localStorage.getItem("user");
-    if(!user){
-        window.location.href = "login.html";
+function go(page) {
+    if (page === "login.html") {
+        window.location.href = "/";
+    } else if (page === "signup.html") {
+        window.location.href = "/signup";
+    } else if (page === "dashboard.html") {
+        window.location.href = "/dashboard";
+    } else {
+        window.location.href = page;
     }
 }
 
-function setLoggedInUser(){
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "/";
+}
+
+function checkAuth() {
+    const user = localStorage.getItem("user");
+    if (!user) {
+        window.location.href = "/";
+    }
+}
+
+function setLoggedInUser() {
     const user = localStorage.getItem("user");
     const el = document.getElementById("loggedUser");
-    if(el && user){
+    if (el && user) {
         el.innerText = user;
     }
 }
@@ -30,45 +38,48 @@ function setLoggedInUser(){
 /* =========================
 SIGNUP
 ========================= */
-async function signup(){
+async function signup() {
     const usernameEl = document.getElementById("username");
+    const emailEl = document.getElementById("email");
     const passwordEl = document.getElementById("password");
     const confirmEl = document.getElementById("confirm");
     const errorEl = document.getElementById("signupError");
     const btn = document.getElementById("signupBtn");
 
-    if(!usernameEl || !passwordEl){
+    const userInput = usernameEl || emailEl;
+
+    if (!userInput || !passwordEl) {
         console.error("Signup inputs not found");
         return;
     }
 
-    const user = usernameEl.value.trim();
+    const user = userInput.value.trim();
     const pass = passwordEl.value.trim();
     const confirm = confirmEl ? confirmEl.value.trim() : pass;
 
-    if(errorEl) errorEl.innerText = "";
+    if (errorEl) errorEl.innerText = "";
 
-    if(user.length < 3){
-        if(errorEl) errorEl.innerText = "Username must be at least 3 characters";
+    if (user.length < 3) {
+        if (errorEl) errorEl.innerText = "Username must be at least 3 characters";
         return;
     }
 
-    if(pass.length < 6){
-        if(errorEl) errorEl.innerText = "Password must be at least 6 characters";
+    if (pass.length < 6) {
+        if (errorEl) errorEl.innerText = "Password must be at least 6 characters";
         return;
     }
 
-    if(pass !== confirm){
-        if(errorEl) errorEl.innerText = "Passwords do not match";
+    if (pass !== confirm) {
+        if (errorEl) errorEl.innerText = "Passwords do not match";
         return;
     }
 
-    if(btn){
+    if (btn) {
         btn.innerText = "Creating...";
         btn.disabled = true;
     }
 
-    try{
+    try {
         const res = await fetch(`${API}/register/`, {
             method: "POST",
             headers: {
@@ -82,52 +93,60 @@ async function signup(){
 
         const data = await res.json();
 
-        if(data.success){
-            window.location.href = "login.html";
+        if (data.success) {
+            alert("Account created successfully");
+            window.location.href = "/";
         } else {
-            if(errorEl) errorEl.innerText = "User already exists";
+            if (errorEl) errorEl.innerText = "User already exists";
         }
-    } catch (e){
+    } catch (e) {
         console.error(e);
-        if(errorEl) errorEl.innerText = "Server error";
+        if (errorEl) errorEl.innerText = "Server error";
     } finally {
-        if(btn){
+        if (btn) {
             btn.innerText = "Create account";
             btn.disabled = false;
         }
     }
 }
 
+async function register() {
+    await signup();
+}
+
 /* =========================
 LOGIN
 ========================= */
-async function login(){
+async function login() {
     const usernameEl = document.getElementById("username");
+    const emailEl = document.getElementById("email");
     const passwordEl = document.getElementById("password");
-    const errorEl = document.getElementById("loginError");
+    const errorEl = document.getElementById("loginError") || document.getElementById("signupError");
     const btn = document.getElementById("loginBtn");
 
-    if(!usernameEl || !passwordEl){
+    const userInput = usernameEl || emailEl;
+
+    if (!userInput || !passwordEl) {
         console.error("Login inputs not found");
         return;
     }
 
-    const user = usernameEl.value.trim();
+    const user = userInput.value.trim();
     const pass = passwordEl.value.trim();
 
-    if(errorEl) errorEl.innerText = "";
+    if (errorEl) errorEl.innerText = "";
 
-    if(!user || !pass){
-        if(errorEl) errorEl.innerText = "Enter username and password";
+    if (!user || !pass) {
+        if (errorEl) errorEl.innerText = "Enter username and password";
         return;
     }
 
-    if(btn){
+    if (btn) {
         btn.innerText = "Signing in...";
         btn.disabled = true;
     }
 
-    try{
+    try {
         const res = await fetch(`${API}/login/`, {
             method: "POST",
             headers: {
@@ -141,17 +160,17 @@ async function login(){
 
         const data = await res.json();
 
-        if(data.success){
+        if (data.success) {
             localStorage.setItem("user", user);
-            window.location.href = "dashboard.html";
+            window.location.href = "/dashboard";
         } else {
-            if(errorEl) errorEl.innerText = "Invalid username or password";
+            if (errorEl) errorEl.innerText = "Invalid username or password";
         }
-    } catch (e){
+    } catch (e) {
         console.error(e);
-        if(errorEl) errorEl.innerText = "Server error";
+        if (errorEl) errorEl.innerText = "Server error";
     } finally {
-        if(btn){
+        if (btn) {
             btn.innerText = "Login";
             btn.disabled = false;
         }
@@ -163,10 +182,10 @@ EXPENSES
 ========================= */
 let allExpenses = [];
 
-async function load(){
+async function load() {
     const user = localStorage.getItem("user") || "demo";
 
-    try{
+    try {
         const res = await fetch(`${API}/expenses/${user}`);
         const data = await res.json();
 
@@ -174,19 +193,19 @@ async function load(){
 
         renderExpenses(allExpenses);
         updateExpenseSummary(allExpenses);
-    } catch(err){
+    } catch (err) {
         console.error("Expense load error:", err);
     }
 }
 
-function renderExpenses(data){
+function renderExpenses(data) {
     const list = document.getElementById("list");
-    if(!list) return;
+    if (!list) return;
 
-    if(list.tagName.toLowerCase() === "tbody"){
+    if (list.tagName.toLowerCase() === "tbody") {
         list.innerHTML = "";
 
-        if(data.length === 0){
+        if (data.length === 0) {
             list.innerHTML = `
                 <tr>
                     <td colspan="4" style="text-align:center;color:#94a3b8;padding:24px;">
@@ -217,7 +236,7 @@ function renderExpenses(data){
     }
 }
 
-function updateExpenseSummary(data){
+function updateExpenseSummary(data) {
     let total = 0;
     let categoryMap = {};
 
@@ -230,8 +249,8 @@ function updateExpenseSummary(data){
     let topCategory = "-";
     let max = 0;
 
-    for(const key in categoryMap){
-        if(categoryMap[key] > max){
+    for (const key in categoryMap) {
+        if (categoryMap[key] > max) {
             max = categoryMap[key];
             topCategory = key;
         }
@@ -241,12 +260,12 @@ function updateExpenseSummary(data){
     const topCatEl = document.getElementById("topCategoryValue");
     const countEl = document.getElementById("expenseCountValue");
 
-    if(totalEl) totalEl.innerText = `₹${total}`;
-    if(topCatEl) topCatEl.innerText = topCategory;
-    if(countEl) countEl.innerText = data.length;
+    if (totalEl) totalEl.innerText = `₹${total}`;
+    if (topCatEl) topCatEl.innerText = topCategory;
+    if (countEl) countEl.innerText = data.length;
 }
 
-async function addExpense(){
+async function addExpense() {
     const user = localStorage.getItem("user") || "demo";
 
     const expense = {
@@ -256,32 +275,32 @@ async function addExpense(){
         description: document.getElementById("desc")?.value || ""
     };
 
-    if(!expense.date || !expense.amount){
+    if (!expense.date || !expense.amount) {
         alert("Please fill date and amount");
         return;
     }
 
-    try{
+    try {
         await fetch(`${API}/add_expense/${user}`, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(expense)
         });
 
-        if(document.getElementById("date")) document.getElementById("date").value = "";
-        if(document.getElementById("amount")) document.getElementById("amount").value = "";
-        if(document.getElementById("desc")) document.getElementById("desc").value = "";
-        if(document.getElementById("category")) document.getElementById("category").value = "Food";
+        if (document.getElementById("date")) document.getElementById("date").value = "";
+        if (document.getElementById("amount")) document.getElementById("amount").value = "";
+        if (document.getElementById("desc")) document.getElementById("desc").value = "";
+        if (document.getElementById("category")) document.getElementById("category").value = "Food";
 
         load();
-    } catch(err){
+    } catch (err) {
         console.error("Add expense error:", err);
     }
 }
 
-function filterExpenses(){
+function filterExpenses() {
     const search = document.getElementById("expenseSearch");
-    if(!search) return;
+    if (!search) return;
 
     const keyword = search.value.toLowerCase();
 
@@ -298,16 +317,16 @@ function filterExpenses(){
 /* =========================
 AI CHAT
 ========================= */
-function quickAsk(text){
+function quickAsk(text) {
     const input = document.getElementById("userInput");
-    if(!input) return;
+    if (!input) return;
     input.value = text;
     sendMessage();
 }
 
-function appendMessage(role, text){
+function appendMessage(role, text) {
     const chatBox = document.getElementById("chatBox");
-    if(!chatBox) return;
+    if (!chatBox) return;
 
     const div = document.createElement("div");
     div.className = `chat-bubble ${role}`;
@@ -316,9 +335,9 @@ function appendMessage(role, text){
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function appendTyping(){
+function appendTyping() {
     const chatBox = document.getElementById("chatBox");
-    if(!chatBox) return null;
+    if (!chatBox) return null;
 
     const div = document.createElement("div");
     div.className = "chat-bubble bot";
@@ -333,15 +352,15 @@ function appendTyping(){
     return div;
 }
 
-async function sendMessage(){
+async function sendMessage() {
     const input = document.getElementById("userInput");
     const btn = document.getElementById("sendBtn");
     const chatBox = document.getElementById("chatBox");
 
-    if(!input || !btn || !chatBox) return;
+    if (!input || !btn || !chatBox) return;
 
     const message = input.value.trim();
-    if(!message) return;
+    if (!message) return;
 
     appendMessage("user", message);
     input.value = "";
@@ -350,7 +369,7 @@ async function sendMessage(){
 
     const typing = appendTyping();
 
-    try{
+    try {
         const user = localStorage.getItem("user") || "demo";
 
         const expenseRes = await fetch(`${API}/expenses/${user}`);
@@ -358,7 +377,7 @@ async function sendMessage(){
 
         const aiRes = await fetch(`${API}/ai_chat/`, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 message,
                 expenses
@@ -367,10 +386,10 @@ async function sendMessage(){
 
         const data = await aiRes.json();
 
-        if(typing) typing.remove();
+        if (typing) typing.remove();
         appendMessage("bot", data.reply || "No response received.");
-    } catch(err){
-        if(typing) typing.remove();
+    } catch (err) {
+        if (typing) typing.remove();
         appendMessage("bot", "Something went wrong while contacting the AI service.");
         console.error(err);
     } finally {
@@ -381,9 +400,9 @@ async function sendMessage(){
 
 window.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("userInput");
-    if(input){
+    if (input) {
         input.addEventListener("keydown", (e) => {
-            if(e.key === "Enter"){
+            if (e.key === "Enter") {
                 sendMessage();
             }
         });
