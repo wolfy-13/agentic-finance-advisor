@@ -87,48 +87,10 @@ class ChatRequest(BaseModel):
     message: str
     expenses: list
 
-@app.post("/ai_chat/")
-def ai_chat(data: ChatRequest):
-    message = data.message.lower()
-    expenses = data.expenses or []
-
-    total = sum(float(e.get("amount", 0)) for e in expenses)
-
-    if "save" in message:
-        reply = f"Your total tracked spending is ₹{total:.0f}. Try reducing your highest category by 10%."
-    elif "overspending" in message:
-        reply = f"You may be overspending. Your current total is ₹{total:.0f}. Review repeated categories."
-    elif "summary" in message:
-        reply = f"You have {len(expenses)} expenses with total ₹{total:.0f}."
-    else:
-        reply = f"I analysed your finances. Total spending so far is ₹{total:.0f}."
-
-    return {"reply": reply}
-    expenses_db = {}
-
-class Expense(BaseModel):
-    date: str
-    category: str
-    amount: float
-    description: str
-
-@app.get("/expenses/{user}")
-def get_expenses(user: str):
-    return expenses_db.get(user, [])
-
-@app.post("/add_expense/{user}")
-def add_expense(user: str, expense: Expense):
-    if user not in expenses_db:
-        expenses_db[user] = []
-
-    expenses_db[user].append(expense.dict())
-    return {"status": "added"}
-    class ChatRequest(BaseModel):
-    message: str
-    expenses: list
 
 @app.post("/ai_chat/")
 def ai_chat(data: ChatRequest):
+
     message = data.message.lower()
     expenses = data.expenses or []
 
@@ -143,12 +105,12 @@ def ai_chat(data: ChatRequest):
     top_category = max(category_map, key=category_map.get) if category_map else "None"
 
     if "save" in message:
-        reply = f"Your total spending is ₹{total:.0f}. Try reducing your top category, {top_category}, by 10% to improve savings."
+        reply = f"Your total spending is ₹{total:.0f}. Try reducing {top_category} spending."
     elif "overspending" in message:
-        reply = f"Your highest spending category is {top_category}. That is the first place to review for overspending."
+        reply = f"You may be overspending on {top_category}."
     elif "summary" in message:
-        reply = f"You have {len(expenses)} recorded expenses with total spending of ₹{total:.0f}. Your top category is {top_category}."
+        reply = f"You have {len(expenses)} expenses. Total spending ₹{total:.0f}. Top category {top_category}."
     else:
-        reply = f"I reviewed your expenses. Total spending is ₹{total:.0f}, and your top category is {top_category}."
+        reply = f"I analysed your expenses. Total ₹{total:.0f}. Top category {top_category}."
 
     return {"reply": reply}
