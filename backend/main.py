@@ -114,3 +114,32 @@ def ai_chat(data: ChatRequest):
         reply = f"I analysed your expenses. Total ₹{total:.0f}. Top category {top_category}."
 
     return {"reply": reply}
+    from backend.database import cursor, conn
+
+@app.get("/expenses/{user}")
+def get_expenses(user: str):
+
+    cursor.execute("SELECT date,category,amount,description FROM expenses WHERE username=?", (user,))
+    rows = cursor.fetchall()
+
+    return [
+        {
+            "date": r[0],
+            "category": r[1],
+            "amount": r[2],
+            "description": r[3]
+        } for r in rows
+    ]
+
+
+@app.post("/add_expense/{user}")
+def add_expense(user: str, expense: Expense):
+
+    cursor.execute(
+        "INSERT INTO expenses(username,date,category,amount,description) VALUES (?,?,?,?,?)",
+        (user, expense.date, expense.category, expense.amount, expense.description)
+    )
+
+    conn.commit()
+
+    return {"status":"added"}
